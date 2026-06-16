@@ -1,0 +1,232 @@
+﻿@model taskManager_web_1036.Models.ViewModel.DashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+
+
+    int totalP = Model.HighPriorityTasks + Model.MediumPriorityTasks + Model.LowPriorityTasks;
+    int highPct = totalP > 0 ? (int)Math.Round(Model.HighPriorityTasks * 100.0 / totalP) : 0;
+    int mediumPct = totalP > 0 ? (int)Math.Round(Model.MediumPriorityTasks * 100.0 / totalP) : 0;
+    int lowPct = totalP > 0 ? (int)Math.Round(Model.LowPriorityTasks * 100.0 / totalP) : 0;
+
+  
+    int completionRate = Model.TotalTasks > 0
+        ? (int)Math.Round(Model.CompletedTasks * 100.0 / Model.TotalTasks)
+        : 0;
+
+  
+    string StatusBadge(string status) => status switch
+    {
+        "InProgress" => "badge-inprogress",
+        "Completed" => "badge-done",
+        _ => "badge-todo"
+    };
+    string StatusLabel(string status) => status switch
+    {
+        "InProgress" => "In progress",
+        "Completed" => "Completed",
+        _ => "To do"
+    };
+    string PriorityBadge(string priority) => priority switch
+    {
+        "High" => "badge-high",
+        "Medium" => "badge-medium",
+        _ => "badge-low"
+    };
+    string RoleBadge(string role) =>
+        role == "Admin" ? "badge-admin" : "badge-employee";
+
+    string AvatarColors(string role) =>
+        role == "Admin"
+            ? "background:#EEEDFE; color:#3C3489;"
+            : "background:#E1F5EE; color:#0F6E56;";
+}
+
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@@tabler/icons-webfont@@3.30.0/dist/tabler-icons.min.css" />
+<link href="~/css/dashboradadmin.css" rel="stylesheet" />
+
+<div class="dash-wrap">
+
+   
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            <i class="ti ti-circle-check"></i> @TempData["Success"]
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            <i class="ti ti-alert-circle"></i> @TempData["Error"]
+        </div>
+    }
+
+
+    <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:1.25rem;">
+        <div>
+            <p style="font-size:18px; font-weight:500;">Admin dashboard</p>
+            <p style="font-size:13px; color:#666; margin-top:4px;">
+                Welcome back — here's what's happening today
+            </p>
+        </div>
+        <a class="quick-btn" asp-action="Index" asp-controller="Admin"
+           style="padding:6px 12px; font-size:12px;">
+            <i class="ti ti-refresh"></i> Refresh
+        </a>
+    </div>
+
+    <div class="stat-grid">
+        <div class="stat-card">
+            <p class="stat-label"><i class="ti ti-users"></i> Total users</p>
+            <p class="stat-value">@Model.TotalUsers</p>
+            <p class="stat-sub">@Model.TotalAdmins admins · @Model.TotalEmployees employees</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label"><i class="ti ti-clipboard-list"></i> Total tasks</p>
+            <p class="stat-value">@Model.TotalTasks</p>
+            <p class="stat-sub">Across all employees</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label"><i class="ti ti-loader"></i> In progress</p>
+            <p class="stat-value" style="color:#854F0B;">@Model.InProgressTasks</p>
+            <p class="stat-sub">
+                @(Model.TotalTasks > 0
+                                ? $"{(int)Math.Round(Model.InProgressTasks * 100.0 / Model.TotalTasks)}% of all tasks"
+                                : "No tasks yet")
+            </p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label"><i class="ti ti-circle-check"></i> Completed</p>
+            <p class="stat-value" style="color:#3B6D11;">@Model.CompletedTasks</p>
+            <p class="stat-sub">@completionRate% completion rate</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label"><i class="ti ti-alert-circle"></i> Unassigned</p>
+            <p class="stat-value" style="color:#A32D2D;">@Model.UnassignedTasks</p>
+            <p class="stat-sub">Need assignment</p>
+        </div>
+    </div>
+
+
+    <div class="two-col" style="margin-bottom:1rem;">
+
+        <div class="section-card">
+            <p class="section-title">
+                <i class="ti ti-chart-bar"></i> Tasks by priority
+            </p>
+            <div class="bar-row">
+                <span class="bar-label">High</span>
+                <div class="bar-bg">
+                    <div class="bar-fill" style="width:@highPct%; background:#E24B4A;"></div>
+                </div>
+                <span class="bar-count">@Model.HighPriorityTasks</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-label">Medium</span>
+                <div class="bar-bg">
+                    <div class="bar-fill" style="width:@mediumPct%; background:#EF9F27;"></div>
+                </div>
+                <span class="bar-count">@Model.MediumPriorityTasks</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-label">Low</span>
+                <div class="bar-bg">
+                    <div class="bar-fill" style="width:@lowPct%; background:#639922;"></div>
+                </div>
+                <span class="bar-count">@Model.LowPriorityTasks</span>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <p class="section-title">
+                <i class="ti ti-bolt"></i> Quick actions
+            </p>
+            <div class="quick-actions">
+                <a class="quick-btn" asp-action="CreateUser" asp-controller="Admin">
+                    <i class="ti ti-user-plus"></i> Create user
+                </a>
+                <a class="quick-btn" asp-action="CreateTask" asp-controller="Admin">
+                    <i class="ti ti-plus"></i> Create task
+                </a>
+                <a class="quick-btn" asp-action="Tasks" asp-controller="Admin">
+                    <i class="ti ti-list-check"></i> Manage tasks
+                </a>
+                <a class="quick-btn" asp-action="Users" asp-controller="Admin">
+                    <i class="ti ti-users"></i> Manage users
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+  
+    <div class="three-col">
+
+        <div class="section-card">
+            <p class="section-title"><i class="ti ti-clock"></i> Recent tasks</p>
+
+            @if (!Model.RecentTasks.Any())
+            {
+                <p style="font-size:13px; color:#999;">No tasks created yet.</p>
+            }
+            else
+            {
+                @foreach (var task in Model.RecentTasks)
+                {
+                    <div class="row-item">
+                        <span style="color:#1a1a1a; max-width:55%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"
+                              title="@task.Title">
+                            @task.Title
+                        </span>
+                        <div class="badge-set">
+                            <span class="badge @PriorityBadge(task.Priority ?? "Low")">
+                                @(task.Priority ?? "Low")
+                            </span>
+                            <span class="badge @StatusBadge(task.Status ?? "Todo")">
+                                @StatusLabel(task.Status ?? "Todo")
+                            </span>
+                        </div>
+                    </div>
+                }
+            }
+
+            <div style="padding-top:10px; text-align:right;">
+                <a class="view-all" asp-action="Tasks" asp-controller="Admin">
+                    View all tasks →
+                </a>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <p class="section-title"><i class="ti ti-users"></i> Users overview</p>
+
+            @if (!Model.RecentUsers.Any())
+            {
+                <p style="font-size:13px; color:#999;">No users found.</p>
+            }
+            else
+            {
+                @foreach (var user in Model.RecentUsers)
+                {
+                    <div class="row-item">
+                        <div class="row-item-left">
+                            <div class="avatar" style="@AvatarColors(user.Role)">
+                                @user.Initials
+                            </div>
+                            <span style="color:#1a1a1a;">@user.FullName</span>
+                        </div>
+                        <span class="badge @RoleBadge(user.Role)">@user.Role</span>
+                    </div>
+                }
+            }
+
+            <div style="padding-top:10px; text-align:right;">
+                <a class="view-all" asp-action="Users" asp-controller="Admin">
+                    View all users →
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,124 @@
+﻿@model taskManager_web_1036.Models.ViewModel.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login — TaskManager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="~/css/login.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div class="card">
+
+        <!-- ══ LEFT: promo ══ -->
+        <div class="panel-left">
+            <div class="promo-icon">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-7 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm-5 9 3.5-4.5 2.5 3.01L16 11l3 4H7z" /></svg>
+            </div>
+            <p class="promo-tag">Task Management</p>
+            <h2 class="promo-title">Welcome Back!</h2>
+            <p class="promo-sub">Sign in to manage your tasks, deadlines, and team projects.</p>
+
+            <ul class="features">
+                <li>
+                    <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
+                    Track tasks in real-time
+                </li>
+                <li>
+                    <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
+                    Role-based access control
+                </li>
+                <li>
+                    <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
+                    Admin &amp; Employee dashboards
+                </li>
+            </ul>
+
+            <p style="font-size:.88rem;color:rgba(255,255,255,.65);margin-bottom:16px;">Don't have an account?</p>
+            <a asp-controller="Account" asp-action="Register" class="btn-register">Sign Up</a>
+        </div>
+
+        <!-- ══ RIGHT: form ══ -->
+        <div class="panel-right">
+            <div class="form-box">
+
+                <h1 class="form-title">Sign In</h1>
+                <p class="form-subtitle">Enter your credentials to continue</p>
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" /></svg>
+                        @ViewBag.Error
+                    </div>
+                }
+
+                <form method="post" asp-controller="Account" asp-action="Login">
+                    @Html.AntiForgeryToken()
+
+                    <!-- Email -->
+                    <div class="field">
+                        <div class="input-row">
+                            <svg class="ico" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" /></svg>
+                            <input asp-for="Email" type="email" placeholder="E-mail address" autocomplete="email" />
+                        </div>
+                        <span asp-validation-for="Email" class="field-error"></span>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="field">
+                        <div class="input-row">
+                            <svg class="ico" viewBox="0 0 24 24"><path d="M18 8h-1V6A5 5 0 0 0 7 6v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2zm-6 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm3.1-9H8.9V6a3.1 3.1 0 0 1 6.2 0v2z" /></svg>
+                            <input asp-for="Password" type="password" id="pwInput" placeholder="Password" autocomplete="current-password" />
+                            <button type="button" class="pw-toggle" onclick="togglePw()" aria-label="Toggle password">
+                                <svg id="pwEye" viewBox="0 0 24 24">
+                                    <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+                                </svg>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Password" class="field-error"></span>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Sign In</button>
+                </form>
+
+                <div class="divider"><span></span><p>or</p><span></span></div>
+
+                <p class="footer-link">
+                    New to TaskManager? <a asp-controller="Account" asp-action="Register">Create account</a>
+                </p>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function togglePw() {
+            const input = document.getElementById('pwInput');
+            const icon  = document.getElementById('pwEye');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.innerHTML = '<path d="M11.83 9L15 12.16V12a3 3 0 0 0-3-3h-.17m-4.3.8 1.55 1.55A3 3 0 0 0 12 15a3 3 0 0 0 1.4-.37l1.46 1.46A7 7 0 0 1 12 17 7 7 0 0 1 5 12a7 7 0 0 1 1.63-4.46M3 3l18 18-1.42 1.42-1.84-1.84A7 7 0 0 1 12 17 7 7 0 0 1 5 12c0-1.5.43-2.9 1.17-4.08L3 4.41 4.41 3M12 5a7 7 0 0 1 7 7c0 .64-.08 1.27-.24 1.88l-2.1-2.1A3 3 0 0 0 12 9a3 3 0 0 0-2.65 1.56L7.27 8.47A7 7 0 0 1 12 5z"/>';
+            } else {
+                input.type = 'password';
+                icon.innerHTML = '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>';
+            }
+        }
+    </script>
+
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+
+</body>
+
+</html>

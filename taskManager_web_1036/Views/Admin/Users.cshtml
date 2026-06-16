@@ -1,0 +1,30 @@
+﻿@model List<taskManager_web_1036.Models.ViewModel.CreateUserViewModel>
+
+<h2>Users List</h2>
+
+<a class="btn btn-primary mb-3" href="/Admin/CreateUser">Create User</a>
+
+<table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Role</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td>@u.Id</td>
+                <td>@u.FullName</td>
+                <td>@u.Email</td>
+                <td>@u.Role</td>
+            </tr>
+        }
+    </tbody>
+
+</table>

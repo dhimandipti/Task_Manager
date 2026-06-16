@@ -1,0 +1,72 @@
+﻿@model List<taskManager_web_1036.Models.ViewModel.TaskViewModel>
+
+<h2>Tasks List</h2>
+
+<a class="btn btn-success mb-3" href="/Admin/CreateTask">Create Task</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Assigned To</th>
+            <th>Created By</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var t in Model)
+        {
+            <tr>
+                <td>@t.Title</td>
+                <td>@t.Description</td>
+                <td>@t.Priority</td>
+                <td>@t.Status</td>
+                <td>
+                    @(string.IsNullOrEmpty(t.AssignedUserName)
+                                    ? "Not Assigned"
+                                    : t.AssignedUserName)
+                </td>
+                <td>
+                    @(string.IsNullOrEmpty(t.CreatedByName)
+                                    ? "Unknown"
+                                    : t.CreatedByName)
+                </td>
+                <td>
+                    <a href="/Admin/EditTask/@t.Id" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="/Admin/DeleteTask/@t.Id"
+                       onclick="return confirm('Are you sure?')"
+                       class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<hr />
+
+<h4>Assign Task</h4>
+
+<form method="post" action="/Admin/AssignTask">
+
+    <select name="taskId" class="form-control mb-2" required>
+        <option value="">-- Select Task --</option>
+        @foreach (var t in Model)
+        {
+            <option value="@t.Id">@t.Title</option>
+        }
+    </select>
+
+    <select name="userId" class="form-control mb-2" required>
+        <option value="">-- Select User --</option>
+        @foreach (var u in ViewBag.Users)
+        {
+            <option value="@u.Id">@u.FullName</option>
+        }
+    </select>
+
+    <button class="btn btn-primary">Assign Task</button>
+
+</form>

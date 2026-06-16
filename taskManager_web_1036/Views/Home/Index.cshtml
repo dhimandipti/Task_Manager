@@ -1,0 +1,263 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+
+<div class="tm-home">
+
+    <!-- ═══════════════════ HERO ═══════════════════ -->
+    <section class="hero">
+        <div class="hero-inner">
+            <div class="hero-content">
+                <div class="hero-eyebrow">
+                    <i class="fa fa-bolt"></i> .NET 8 Full Stack Assignment
+                </div>
+                <h1>
+                    Manage Tasks,
+                    <span>Boost Productivity.</span>
+                </h1>
+                <p class="hero-sub">
+                    A complete Task Management System built with .NET 8 Web API, JWT Authentication,
+                    Role-Based Authorization, and Entity Framework Core — with a clean, modern frontend.
+                </p>
+                <div class="hero-actions">
+                    @if (Context.Session.GetString("JWToken") == null)
+                    {
+                        <a asp-controller="Account" asp-action="Register" class="btn-hero-primary">
+                            <i class="fa fa-rocket"></i> Get Started
+                        </a>
+                        <a asp-controller="Account" asp-action="Login" class="btn-hero-ghost">
+                            <i class="fa fa-right-to-bracket"></i> Sign In
+                        </a>
+                    }
+                    else if (Context.Session.GetString("Role") == "Admin")
+                    {
+                        <a asp-controller="Admin" asp-action="Index" class="btn-hero-primary">
+                            <i class="fa fa-gauge"></i> Go to Dashboard
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Employee" asp-action="MyTasks" class="btn-hero-primary">
+                            <i class="fa fa-list-check"></i> My Tasks
+                        </a>
+                    }
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-num">JWT</span>
+                        <span class="stat-lbl">Auth + Refresh Token</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-num">2</span>
+                        <span class="stat-lbl">Role Types</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-num">REST</span>
+                        <span class="stat-lbl">API + Swagger</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mock dashboard visual -->
+            <div class="hero-visual">
+                <div class="mock-card">
+                    <div class="mock-card-header">
+                        <span class="mock-title"><i class="fa fa-list-check" style="margin-right:6px;color:var(--yellow)"></i>Sprint Tasks</span>
+                        <span class="mock-badge badge-high">3 High Priority</span>
+                    </div>
+                    <div class="mock-task-row">
+                        <div class="mock-check done"></div>
+                        <span class="mock-task-name done-text">Setup JWT Authentication</span>
+                        <div class="mock-avatar av-a">AK</div>
+                        <span class="mock-badge badge-done" style="font-size:.65rem;padding:2px 8px;">Done</span>
+                    </div>
+                    <div class="mock-task-row">
+                        <div class="mock-check done"></div>
+                        <span class="mock-task-name done-text">Database Schema Design</span>
+                        <div class="mock-avatar av-b">SM</div>
+                        <span class="mock-badge badge-done" style="font-size:.65rem;padding:2px 8px;">Done</span>
+                    </div>
+                    <div class="mock-task-row">
+                        <div class="mock-check"></div>
+                        <span class="mock-task-name">Build Admin Dashboard</span>
+                        <div class="mock-avatar av-a">AK</div>
+                        <span class="mock-badge badge-high" style="font-size:.65rem;padding:2px 8px;">High</span>
+                    </div>
+                    <div class="mock-task-row">
+                        <div class="mock-check"></div>
+                        <span class="mock-task-name">Implement Pagination API</span>
+                        <div class="mock-avatar av-c">RJ</div>
+                        <span class="mock-badge badge-med" style="font-size:.65rem;padding:2px 8px;">Medium</span>
+                    </div>
+                </div>
+
+                <div class="mock-card">
+                    <div class="mock-progress-label">
+                        <span>Overall Progress</span>
+                        <span>62%</span>
+                    </div>
+                    <div class="mock-progress-track">
+                        <div class="mock-progress-fill" style="width:62%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════ ROLES ═══════════════════ -->
+    <section class="section">
+        <div class="section-inner">
+            <span class="section-eyebrow">Role-Based Access</span>
+            <h2 class="section-title">Two roles. Full control.</h2>
+            <p class="section-sub">The system supports Admin and Employee roles with different permissions, managed through JWT claims and policy-based authorization.</p>
+
+            <div class="roles-grid">
+                <!-- Admin -->
+                <div class="role-card admin-card">
+                    <div class="role-icon purple">
+                        <i class="fa fa-shield-halved"></i>
+                    </div>
+                    <p class="role-name">Admin</p>
+                    <p class="role-desc">Full control over users and tasks. Admins manage the entire system — from creating users to assigning and tracking all tasks.</p>
+                    <ul class="role-perms">
+                        <li><i class="fa fa-check-circle"></i> Create &amp; manage users</li>
+                        <li><i class="fa fa-check-circle"></i> Create, edit &amp; delete tasks</li>
+                        <li><i class="fa fa-check-circle"></i> Assign tasks to employees</li>
+                        <li><i class="fa fa-check-circle"></i> View all tasks &amp; dashboard</li>
+                        <li><i class="fa fa-check-circle"></i> Search &amp; filter with pagination</li>
+                    </ul>
+                </div>
+
+                <!-- Employee -->
+                <div class="role-card emp-card">
+                    <div class="role-icon yellow">
+                        <i class="fa fa-user-tie"></i>
+                    </div>
+                    <p class="role-name">Employee</p>
+                    <p class="role-desc">Focused view for team members. Employees see only their assigned tasks and can update progress status as they work.</p>
+                    <ul class="role-perms">
+                        <li><i class="fa fa-check-circle"></i> View assigned tasks only</li>
+                        <li><i class="fa fa-check-circle"></i> Update task status</li>
+                        <li><i class="fa fa-check-circle"></i> Filter &amp; search own tasks</li>
+                        <li><i class="fa fa-check-circle"></i> Secure JWT session</li>
+                        <li><i class="fa fa-check-circle"></i> Refresh token support</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════ FEATURES ═══════════════════ -->
+    <section class="section features-bg">
+        <div class="section-inner">
+            <span class="section-eyebrow">System Features</span>
+            <h2 class="section-title">Everything in the spec. Done right.</h2>
+            <p class="section-sub">Built to meet every mandatory requirement from the assessment — with clean architecture and best practices throughout.</p>
+
+            <div class="features-grid">
+                <div class="feat-card">
+                    <div class="feat-icon"><i class="fa fa-key"></i></div>
+                    <p class="feat-title">JWT + Refresh Token</p>
+                    <p class="feat-desc">Secure authentication with short-lived access tokens and refresh token rotation for seamless sessions.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon"><i class="fa fa-user-shield"></i></div>
+                    <p class="feat-title">Role-Based Authorization</p>
+                    <p class="feat-desc">Policy-based authorization guards every endpoint — Admins and Employees see only what they're allowed to.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon"><i class="fa fa-database"></i></div>
+                    <p class="feat-title">Entity Framework Core</p>
+                    <p class="feat-desc">Code-first EF Core migrations with SQL Server. Proper foreign keys, relationships, and indexing.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon"><i class="fa fa-magnifying-glass"></i></div>
+                    <p class="feat-title">Search &amp; Filtering</p>
+                    <p class="feat-desc">Search tasks by title, filter by status or priority, with server-side pagination on every list endpoint.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon"><i class="fa fa-file-code"></i></div>
+                    <p class="feat-title">Swagger Documentation</p>
+                    <p class="feat-desc">Full Swagger/OpenAPI docs for all endpoints with JWT bearer auth support built in.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon"><i class="fa fa-triangle-exclamation"></i></div>
+                    <p class="feat-title">Global Exception Handling</p>
+                    <p class="feat-desc">Middleware-level exception handler returns consistent error responses across all API routes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════ TASK FIELDS ═══════════════════ -->
+    <section class="section">
+        <div class="section-inner">
+            <span class="section-eyebrow">Data Model</span>
+            <h2 class="section-title">Task fields at a glance</h2>
+            <p class="section-sub">Every task in the system carries these fields, stored in SQL Server and exposed through REST APIs.</p>
+
+            <div class="fields-wrap">
+                <span class="field-badge"><i class="fa fa-heading"></i> Title</span>
+                <span class="field-badge"><i class="fa fa-align-left"></i> Description</span>
+                <span class="field-badge"><i class="fa fa-flag"></i> Priority (High / Medium / Low)</span>
+                <span class="field-badge"><i class="fa fa-circle-half-stroke"></i> Status (Pending / In Progress / Done)</span>
+                <span class="field-badge"><i class="fa fa-user-check"></i> Assigned User</span>
+                <span class="field-badge"><i class="fa fa-calendar-days"></i> Created Date</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════ HOW IT WORKS ═══════════════════ -->
+    <section class="section features-bg">
+        <div class="section-inner">
+            <span class="section-eyebrow">How It Works</span>
+            <h2 class="section-title">From sign-up to done</h2>
+            <p class="section-sub">The complete flow from user registration to task completion in four simple steps.</p>
+
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-num filled">1</div>
+                    <p class="step-title">Register &amp; Login</p>
+                    <p class="step-desc">Create an account with your role. Receive a JWT access token and refresh token on login.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num filled">2</div>
+                    <p class="step-title">Admin Creates Tasks</p>
+                    <p class="step-desc">Admin sets task title, description, priority, and assigns it to an employee.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num filled">3</div>
+                    <p class="step-title">Employee Views Tasks</p>
+                    <p class="step-desc">Employee logs in and sees only their assigned tasks with search and filter options.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num filled">4</div>
+                    <p class="step-title">Update &amp; Track</p>
+                    <p class="step-desc">Employee updates task status. Admin tracks all tasks from the dashboard in real time.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════ CTA ═══════════════════ -->
+    @if (Context.Session.GetString("JWToken") == null)
+    {
+        <section class="cta-section">
+            <div class="cta-inner">
+                <h2>Ready to get started?</h2>
+                <p>Create your account and explore the system — register as an Admin or Employee and see role-based access in action.</p>
+                <div class="cta-btns">
+                    <a asp-controller="Account" asp-action="Register" class="btn-hero-primary">
+                        <i class="fa fa-user-plus"></i> Create Account
+                    </a>
+                    <a asp-controller="Account" asp-action="Login" class="btn-hero-ghost">
+                        <i class="fa fa-right-to-bracket"></i> Sign In
+                    </a>
+                </div>
+            </div>
+        </section>
+    }
+
+</div>
+<link href="~/css/homepage.css" rel="stylesheet" />

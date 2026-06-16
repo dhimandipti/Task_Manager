@@ -1,0 +1,212 @@
+﻿@model taskManager_web_1036.Models.ViewModel.PagedTaskViewModel
+
+@{
+    ViewData["Title"] = "My Tasks";
+    var search = ViewBag.Search as string;
+    var status = ViewBag.Status as string;
+    int page = ViewBag.Page;
+    int pageSize = ViewBag.PageSize;
+
+    int total = Model.TotalCount;
+    int pending = Model.Items.Count(t => t.Status == "Pending");
+    int inProgress = Model.Items.Count(t => t.Status == "InProgress");
+    int completed = Model.Items.Count(t => t.Status == "Completed");
+}
+
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@@tabler/icons-webfont@@3.30.0/dist/tabler-icons.min.css" />
+
+
+
+<div class="emp-wrap">
+
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success"><i class="ti ti-circle-check"></i> @TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger"><i class="ti ti-alert-circle"></i> @TempData["Error"]</div>
+    }
+
+
+    <div class="page-header">
+        <h2><i class="ti ti-clipboard-list" style="font-size:20px; vertical-align:-2px;"></i> My tasks</h2>
+        <p>Track and update the status of your assigned tasks</p>
+    </div>
+
+
+    <div class="stat-grid">
+        <div class="stat-card">
+            <p class="stat-label"><i class="ti ti-list"></i> Total assigned</p>
+            <p class="stat-value">@total</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label"><i class="ti ti-clock"></i> Pending</p>
+            <p class="stat-value" style="color:#185FA5;">@Model.TotalCount</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label"><i class="ti ti-loader"></i> In progress</p>
+            <p class="stat-value" style="color:#854F0B;">@inProgress</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label"><i class="ti ti-circle-check"></i> Completed</p>
+            <p class="stat-value" style="color:#3B6D11;">@completed</p>
+        </div>
+    </div>
+
+    <form method="get" asp-action="MyTasks">
+        <div class="filter-bar">
+            <input type="text" name="search" value="@search"
+                   placeholder="Search title or description…" />
+
+            <select name="status">
+                <option value="">All statuses</option>
+                <option value="Pending" selected="@(status == "Pending" ? "selected" : null)">Pending</option>
+                <option value="InProgress" selected="@(status == "InProgress" ? "selected" : null)">In progress</option>
+                <option value="Completed" selected="@(status == "Completed" ? "selected" : null)">Completed</option>
+            </select>
+
+            <button type="submit" class="btn-filter">
+                <i class="ti ti-filter" style="font-size:13px;"></i> Filter
+            </button>
+
+            <a asp-action="MyTasks" class="btn-clear">
+                <i class="ti ti-x" style="font-size:13px;"></i> Clear
+            </a>
+        </div>
+    </form>
+
+  
+    <div class="card">
+        @if (Model.Items.Count == 0)
+        {
+            <div class="empty">
+                <i class="ti ti-clipboard"></i>
+                No tasks assigned to you@(!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(status) ? " matching this filter" : "").
+            </div>
+        }
+        else
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Created by</th>
+                        <th>Created at</th>
+                        <th>Update status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var task in Model.Items)
+                    {
+                        string priClass = task.Priority switch
+                        {
+                            "High" => "badge-high",
+                            "Medium" => "badge-medium",
+                            _ => "badge-low"
+                        };
+                        string stsClass = task.Status switch
+                        {
+                            "InProgress" => "badge-inprogress",
+                            "Completed" => "badge-completed",
+                            _ => "badge-pending"
+                        };
+                        string stsLabel = task.Status switch
+                        {
+                            "InProgress" => "In progress",
+                            "Completed" => "Completed",
+                            _ => "Pending"
+                        };
+
+                        <tr>
+                            <td style="font-weight:500; max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="@task.Title">
+                                @task.Title
+                            </td>
+                            <td style="color:#555; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="@task.Description">
+                                @task.Description
+                            </td>
+                            <td><span class="badge @priClass">@(task.Priority ?? "Low")</span></td>
+                            <td><span class="badge @stsClass">@stsLabel</span></td>
+                            <td style="color:#555;">@task.CreatedByName</td>
+                            <td style="color:#888; white-space:nowrap;">@task.CreatedAt.ToString("dd MMM yyyy")</td>
+                            <td>
+                                <form method="post" asp-action="UpdateStatus" class="status-form">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="taskId" value="@task.Id" />
+                                    <select name="newStatus">
+                                        <option value="Pending" selected="@(task.Status == "Pending" ? "selected" : null)">Pending</option>
+                                        <option value="InProgress" selected="@(task.Status == "InProgress" ? "selected" : null)">In progress</option>
+                                        <option value="Completed" selected="@(task.Status == "Completed" ? "selected" : null)">Completed</option>
+                                    </select>
+                                    <button type="submit" class="btn-save">
+                                        <i class="ti ti-check" style="font-size:12px;"></i> Save
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+    @if (Model.TotalPages > 1)
+    {
+        <div class="pagination-wrap">
+            <ul class="pagination">
+                @* Previous *@
+                <li class="page-item @(page <= 1 ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-action="MyTasks"
+                       asp-route-page="@(page - 1)"
+                       asp-route-pageSize="@pageSize"
+                       asp-route-search="@search"
+                       asp-route-status="@status">
+                        <i class="ti ti-chevron-left" style="font-size:13px;"></i>
+                    </a>
+                </li>
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == page ? "active" : "")">
+                        <a class="page-link"
+                           asp-action="MyTasks"
+                           asp-route-page="@i"
+                           asp-route-pageSize="@pageSize"
+                           asp-route-search="@search"
+                           asp-route-status="@status">@i</a>
+                    </li>
+                }
+
+                @* Next *@
+                <li class="page-item @(page >= Model.TotalPages ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-action="MyTasks"
+                       asp-route-page="@(page + 1)"
+                       asp-route-pageSize="@pageSize"
+                       asp-route-search="@search"
+                       asp-route-status="@status">
+                        <i class="ti ti-chevron-right" style="font-size:13px;"></i>
+                    </a>
+                </li>
+            </ul>
+
+            <p class="page-meta">
+                Showing @Model.Items.Count of @Model.TotalCount task@(Model.TotalCount != 1 ? "s" : "")
+            </p>
+        </div>
+    }
+    else if (Model.Items.Count > 0)
+    {
+        <p class="page-meta" style="margin-top:8px;">
+            Showing @Model.Items.Count of @Model.TotalCount task@(Model.TotalCount != 1 ? "s" : "")
+        </p>
+    }
+
+</div>
+<link href="~/css/emptask.css" rel="stylesheet" />

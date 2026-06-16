@@ -1,0 +1,73 @@
+﻿@model taskManager_web_1036.Models.ViewModel.TaskViewModel
+
+@{
+    ViewData["Title"] = "Create Task";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Create Task</h4>
+                </div>
+
+                <div class="card-body">
+
+                    <form method="post">
+
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label"></label>
+                            <input asp-for="Title"
+                                   class="form-control form-control-sm"
+                                   placeholder="Enter Task Title" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description"
+                                      class="form-control form-control-sm"
+                                      rows="3"
+                                      placeholder="Enter Description"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Priority" class="form-label"></label>
+                            <select asp-for="Priority"
+                                    class="form-select form-select-sm">
+                                <option value="">Select Priority</option>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="CreatedByUserId" class="form-label"></label>
+                            <input asp-for="CreatedByUserId"
+                                   class="form-control form-control-sm"
+                                   placeholder="Created By User ID" />
+                        </div>
+
+                        <button type="submit" class="btn btn-success">
+                            Create Task
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

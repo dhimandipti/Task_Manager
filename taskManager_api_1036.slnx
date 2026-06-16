@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="taskManager_api_1036/taskManager_api_1036.csproj" />
+  <Project Path="taskManager_web_1036/taskManager_web_1036.csproj" />
+</Solution>
