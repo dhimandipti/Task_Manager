@@ -64,12 +64,10 @@ namespace taskManager_api_1036.Controllers
         public IActionResult RefreshToken(TokenRequest model)
         {
             var user = _userRepository.RefreshToken(model.RefreshToken);
-
             if (user == null)
             {
                 return Unauthorized("Invalid refresh token");
             }
-
             return Ok(new
             {
                 token = user.Token,

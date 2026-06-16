@@ -15,7 +15,7 @@ namespace taskManager_api_1036.Data.Repository
         }
 
    
-        // CREATE USER     
+   
         public async Task<User> CreateUserAsync(CreateUserViewModel model)
         {
             var user = new User
@@ -30,12 +30,12 @@ namespace taskManager_api_1036.Data.Repository
             await _context.SaveChangesAsync();
             return user;
         }      
-        // GET ALL USERS
+     
         public async Task<List<User>> GetAllUsersAsync()
         {
             return await _context.Users.ToListAsync();
         }       
-        // CREATE TASK
+       
       
         public async Task<TaskManagement> CreateTaskAsync(TaskViewModel model)
         {
@@ -96,7 +96,7 @@ namespace taskManager_api_1036.Data.Repository
                 .ToListAsync();
         }
       
-        // DELETE TASK
+       
     
         public async Task<bool> DeleteTaskAsync(int taskId)
         {
@@ -106,7 +106,7 @@ namespace taskManager_api_1036.Data.Repository
             await _context.SaveChangesAsync();
             return true;
         }
-        //update
+      
         public async Task<TaskManagement> UpdateTaskAsync(int id, TaskViewModel model)
         {
             var task = await _context.Tasks.FirstOrDefaultAsync(x => x.Id == id);

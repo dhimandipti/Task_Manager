@@ -22,41 +22,7 @@ namespace taskManager_api_1036.Data.Repository
             _appSettings = appSettings.Value;
         }
 
-        //public User Authenticate(string username, string password)
-        //{
-
-        //    var userInDb = _context.Users.FirstOrDefault(u =>u.Email.ToLower() == username.ToLower()
-        //        &&
-        //        u.PasswordHash == password
-        //        );
-        //    if (userInDb == null) return null;    
-        //     // JWT CREATE
-
-        //    var tokenHandler = new JwtSecurityTokenHandler();
-        //    var key =Encoding.ASCII.GetBytes(_appSettings.Secret);
-        //    var tokenDescriptor = new SecurityTokenDescriptor()
-        //        {
-        //            Subject =new ClaimsIdentity(new Claim[]
-        //            {                    
-
-        //                new Claim(ClaimTypes.NameIdentifier,userInDb.Id.ToString()),                  
-        //                new Claim(ClaimTypes.Name,userInDb.FullName),
-        //                new Claim(ClaimTypes.Role,  userInDb.Role)
-
-        //            }),
-        //            Expires =DateTime.UtcNow.AddDays(7),
-        //            SigningCredentials =
-        //            new SigningCredentials(
-        //            new SymmetricSecurityKey(key),
-        //            SecurityAlgorithms.HmacSha256Signature)
-
-        //        };
-        //    var token =tokenHandler.CreateToken(tokenDescriptor);         
-        //    userInDb.Token = tokenHandler.WriteToken(token);        
-        //    userInDb.PasswordHash = "";
-        //    return userInDb;
-
-        //}
+       
         private string GenerateRefreshToken()
         {
             return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
@@ -82,7 +48,7 @@ namespace taskManager_api_1036.Data.Repository
             new Claim(ClaimTypes.Role, userInDb.Role)
                 }),
 
-                // 🔥 CHANGE THIS (IMPORTANT)
+              
                 Expires = DateTime.UtcNow.AddMinutes(15),
 
                 SigningCredentials = new SigningCredentials(
@@ -93,14 +59,14 @@ namespace taskManager_api_1036.Data.Repository
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            // ACCESS TOKEN
+          
             userInDb.Token = tokenHandler.WriteToken(token);
 
-            // 🔥 CREATE REFRESH TOKEN
+         
             userInDb.RefreshToken = GenerateRefreshToken();
             userInDb.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
 
-            _context.SaveChanges(); // IMPORTANT
+            _context.SaveChanges(); 
 
             userInDb.PasswordHash = "";
             return userInDb;
@@ -155,7 +121,7 @@ namespace taskManager_api_1036.Data.Repository
             if (user == null || user.RefreshTokenExpiry < DateTime.UtcNow)
                 return null;
 
-            // generate new access token
+          
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
 
@@ -176,7 +142,7 @@ namespace taskManager_api_1036.Data.Repository
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            // rotate refresh token
+          
             user.RefreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
             user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
 
